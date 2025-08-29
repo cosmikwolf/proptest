@@ -52,3 +52,10 @@ impl fmt::Display for Reason {
         fmt::Display::fmt(self.message(), f)
     }
 }
+
+#[cfg(feature = "defmt")]
+impl defmt::Format for Reason {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "{=str}", self.message())
+    }
+}

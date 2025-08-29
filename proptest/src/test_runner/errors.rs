@@ -132,3 +132,17 @@ impl<T: fmt::Debug> ::std::error::Error for TestError<T> {
         }
     }
 }
+
+#[cfg(feature = "defmt")]
+impl defmt::Format for TestCaseError {
+    fn format(&self, f: defmt::Formatter) {
+        match self {
+            TestCaseError::Reject(reason) => {
+                defmt::write!(f, "Input rejected: {=str}", reason.message())
+            }
+            TestCaseError::Fail(reason) => {
+                defmt::write!(f, "Test failed: {=str}", reason.message())
+            }
+        }
+    }
+}
