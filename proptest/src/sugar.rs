@@ -9,6 +9,13 @@
 
 use crate::std_facade::fmt;
 
+#[cfg(all(feature = "defmt", feature = "alloc", not(feature = "std")))]
+macro_rules! format {
+    ($($args:tt)*) => {{
+        alloc::format!($($args)*)
+    }};
+}
+
 /// Easily define `proptest` tests.
 ///
 /// Within `proptest!`, define one or more functions without return type
