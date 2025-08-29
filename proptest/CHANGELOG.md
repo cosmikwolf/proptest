@@ -42,6 +42,10 @@
 
 ## 1.7.0
 
+### New Features
+
+- Added `defmt::test` support
+
 ### Other Notes
 
 - Updated `rand` dependency from 0.8 to 0.9.
