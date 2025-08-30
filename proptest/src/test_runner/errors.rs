@@ -80,6 +80,7 @@ impl TestCaseError {
     }
 }
 
+#[cfg(not(feature = "defmt"))]
 impl fmt::Display for TestCaseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -87,6 +88,20 @@ impl fmt::Display for TestCaseError {
                 write!(f, "Input rejected at {}", whence)
             }
             TestCaseError::Fail(ref why) => write!(f, "Case failed: {}", why),
+        }
+    }
+}
+
+#[cfg(feature = "defmt")]
+impl fmt::Display for TestCaseError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            TestCaseError::Reject(ref whence) => {
+                defmt::write!(f, "Input rejected at {}", whence)
+            }
+            TestCaseError::Fail(ref why) => {
+                defmt::write!(f, "Case failed: {}", why)
+            }
         }
     }
 }
@@ -110,6 +125,7 @@ pub enum TestError<T> {
     Fail(Reason, T),
 }
 
+#[cfg(not(feature = "defmt"))]
 impl<T: fmt::Debug> fmt::Display for TestError<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -122,6 +138,19 @@ impl<T: fmt::Debug> fmt::Display for TestError<T> {
     }
 }
 
+#[cfg(feature = "defmt")]
+impl<T: fmt::Debug> fmt::Display for TestError<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            TestError::Abort(ref why) => write!(f, "Test aborted: {}", why),
+            TestError::Fail(ref why, ref what) => {
+                defmt::writeln!(f, "Test failed: {}.", why)?;
+                defmt::write!(f, "minimal failing input: {:#?}", what)
+            }
+        }
+    }
+}
+
 #[cfg(feature = "std")]
 #[allow(deprecated)] // description()
 impl<T: fmt::Debug> ::std::error::Error for TestError<T> {
@@ -129,20 +158,6 @@ impl<T: fmt::Debug> ::std::error::Error for TestError<T> {
         match *self {
             TestError::Abort(..) => "Abort",
             TestError::Fail(..) => "Fail",
-        }
-    }
-}
-
-#[cfg(feature = "defmt")]
-impl defmt::Format for TestCaseError {
-    fn format(&self, f: defmt::Formatter) {
-        match self {
-            TestCaseError::Reject(reason) => {
-                defmt::write!(f, "Input rejected: {=str}", reason.message())
-            }
-            TestCaseError::Fail(reason) => {
-                defmt::write!(f, "Test failed: {=str}", reason.message())
-            }
         }
     }
 }
