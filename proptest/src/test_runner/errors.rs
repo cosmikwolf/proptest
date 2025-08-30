@@ -94,7 +94,7 @@ impl fmt::Display for TestCaseError {
 
 #[cfg(feature = "defmt")]
 impl fmt::Display for TestCaseError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut defmt::Formatter) -> fmt::Result {
         match *self {
             TestCaseError::Reject(ref whence) => {
                 defmt::write!(f, "Input rejected at {}", whence)
@@ -140,7 +140,7 @@ impl<T: fmt::Debug> fmt::Display for TestError<T> {
 
 #[cfg(feature = "defmt")]
 impl<T: fmt::Debug> fmt::Display for TestError<T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut defmt::Formatter) -> fmt::Result {
         match *self {
             TestError::Abort(ref why) => write!(f, "Test aborted: {}", why),
             TestError::Fail(ref why, ref what) => {
@@ -150,6 +150,20 @@ impl<T: fmt::Debug> fmt::Display for TestError<T> {
         }
     }
 }
+
+// #[cfg(feature = "defmt")]
+// impl defmt::Format for TestCaseError {
+//     fn format(&self, f: defmt::Formatter) {
+//         match self {
+//             TestCaseError::Reject(reason) => {
+//                 defmt::write!(f, "Input rejected: {=str}", reason.message())
+//             }
+//             TestCaseError::Fail(reason) => {
+//                 defmt::write!(f, "Test failed: {=str}", reason.message())
+//             }
+//         }
+//     }
+// }
 
 #[cfg(feature = "std")]
 #[allow(deprecated)] // description()
