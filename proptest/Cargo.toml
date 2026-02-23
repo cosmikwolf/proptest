@@ -58,6 +58,10 @@ atomic64bit = []
 
 bit-set = ["dep:bit-set", "dep:bit-vec"]
 
+# Enables defmt::Format implementations for error types, useful for
+# embedded targets using defmt for structured logging.
+defmt = ["dep:defmt"]
+
 # Enables proper handling of panics
 # In particular, hides all intermediate panics flowing into stderr during shrink phase
 handle-panics = ["std"]
@@ -76,6 +80,7 @@ rand_chacha = { workspace = true }
 rusty-fork = { workspace = true, optional = true }
 tempfile = { workspace = true, optional = true }
 x86 = { workspace = true, optional = true }
+defmt = { version = "1.0.1", optional = true }
 
 [package.metadata.docs.rs]
 all-features = true

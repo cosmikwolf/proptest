@@ -1,5 +1,5 @@
 //-
-// Copyright 2017, 2018 The proptest developers
+// Copyright 2017, 2018, 2026 The proptest developers
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -50,5 +50,12 @@ impl From<Box<str>> for Reason {
 impl fmt::Display for Reason {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self.message(), f)
+    }
+}
+
+#[cfg(feature = "defmt")]
+impl defmt::Format for Reason {
+    fn format(&self, f: defmt::Formatter) {
+        defmt::write!(f, "{=str}", self.message())
     }
 }

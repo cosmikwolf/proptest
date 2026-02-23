@@ -1,3 +1,11 @@
+## Unreleased
+
+### New Additions
+
+- Added optional `defmt` feature flag with `defmt::Format` implementations
+  for `Reason`, `TestCaseError`, and `TestError<T>`, enabling structured
+  logging on embedded targets without heap-allocating format strings.
+
 ## 1.10.0
 
 ### Breaking Changes

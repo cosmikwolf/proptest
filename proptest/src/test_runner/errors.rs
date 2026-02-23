@@ -1,5 +1,5 @@
 //-
-// Copyright 2017, 2018 The proptest developers
+// Copyright 2017, 2018, 2026 The proptest developers
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -87,6 +87,47 @@ impl fmt::Display for TestCaseError {
                 write!(f, "Input rejected at {}", whence)
             }
             TestCaseError::Fail(ref why) => write!(f, "Case failed: {}", why),
+        }
+    }
+}
+
+#[cfg(feature = "defmt")]
+impl defmt::Format for TestCaseError {
+    fn format(&self, f: defmt::Formatter) {
+        match self {
+            TestCaseError::Reject(reason) => {
+                defmt::write!(
+                    f,
+                    "Input rejected: {=str}",
+                    reason.message()
+                )
+            }
+            TestCaseError::Fail(reason) => {
+                defmt::write!(
+                    f,
+                    "Test failed: {=str}",
+                    reason.message()
+                )
+            }
+        }
+    }
+}
+
+#[cfg(feature = "defmt")]
+impl<T: defmt::Format> defmt::Format for TestError<T> {
+    fn format(&self, f: defmt::Formatter) {
+        match self {
+            TestError::Abort(why) => {
+                defmt::write!(f, "Test aborted: {=str}", why.message())
+            }
+            TestError::Fail(why, what) => {
+                defmt::write!(
+                    f,
+                    "Test failed: {=str}. Minimal failing input: {}",
+                    why.message(),
+                    what
+                )
+            }
         }
     }
 }
