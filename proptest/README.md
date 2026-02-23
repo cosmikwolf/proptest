@@ -1,6 +1,6 @@
 # Proptest
 
-[![Build Status](https://github.com/proptest-rs/proptest/workflows/Rust/badge.svg?branch=master)](https://github.com/proptest-rs/proptest/actions)
+[![Build Status](https://github.com/proptest-rs/proptest/actions/workflows/rust.yml/badge.svg)](https://github.com/proptest-rs/proptest/actions)
 [![](https://img.shields.io/crates/v/proptest.svg)](https://crates.io/crates/proptest)
 [![](https://img.shields.io/website/https/proptest-rs.github.io/proptest.svg)][book]
 [![](https://docs.rs/proptest/badge.svg)][api-docs]
@@ -28,12 +28,12 @@ The crate is fairly close to being feature-complete and has not seen
 substantial architectural changes in quite some time. At this point, it mainly
 sees passive maintenance.
 
-See the [changelog](https://github.com/proptest-rs/proptest/blob/master/proptest/CHANGELOG.md)
+See the [changelog](https://github.com/proptest-rs/proptest/blob/main/proptest/CHANGELOG.md)
 for a full list of substantial historical changes, breaking and otherwise.
 
 ### MSRV
 
-The current MSRV of this crate is 1.74.
+The current MSRV of this crate is 1.84.
 The MSRV is guaranteed to not exceed `<current stable release> - 7`, though in practice it may be lower than this - your mileage may vary.
 If we change this policy in a backwards incompatible way (e.g. changing it to `<current stable release> - 1`), this constitutes a breaking change, and would be a major version bump (e.g. 1.1 -> 2.0).
 
@@ -93,7 +93,7 @@ In `Cargo.toml`, add
 
 ```toml
 [dev-dependencies]
-proptest = "1.6.0"
+proptest = "1.10.0"
 ```
 
 Now we can add some property tests to our date parser. But how do we test

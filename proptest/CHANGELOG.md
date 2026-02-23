@@ -1,4 +1,44 @@
-## Unreleased
+## 1.10.0
+
+### Breaking Changes
+
+- The minimum supported Rust version has been increased to 1.84.0. ([\#612](https://github.com/proptest-rs/proptest/pull/612))
+
+### New Features
+
+- Added a memory-efficient strategy for sampling subsets from ranges without replacement. ([\#586](https://github.com/proptest-rs/proptest/pull/586))
+
+### Other Notes
+
+- Updated `convert_case` requirement from 0.6 to 0.11. ([\#623](https://github.com/proptest-rs/proptest/pull/623))
+- Updated `trybuild` requirement from =1.0.113 to =1.0.115. ([\#624](https://github.com/proptest-rs/proptest/pull/624))
+
+## 1.9.0
+
+### Breaking Changes
+
+- The minimum supported Rust version has been increased to 1.82.0. ([\#605](https://github.com/proptest-rs/proptest/pull/605))
+
+### New Features
+
+- Added `ProptestResultExt` trait with `prop_assume_ok` helper method for converting `Result` types to test outcomes. ([\#589](https://github.com/proptest-rs/proptest/pull/589))
+
+### Other Notes
+
+- Replaced `lazy_static` dependency with `std::sync::LazyLock`. ([\#546](https://github.com/proptest-rs/proptest/pull/546))
+- Fixed doctest and cleaned up warnings. ([\#606](https://github.com/proptest-rs/proptest/pull/606))
+
+## 1.8.0
+
+### New Features
+
+- Implement `Arbitrary` for `Saturating<T>`. ([\#585](https://github.com/proptest-rs/proptest/pull/585))
+- Allow `prop_assert!` with trailing comma. ([\#581](https://github.com/proptest-rs/proptest/pull/581))
+
+### Bug Fixes
+
+- Fix arithmetic overflow on 32-bit processors. ([\#596](https://github.com/proptest-rs/proptest/pull/596))
+- Sanitize user-facing macros to use fully qualified paths, preventing conflicts with user code. ([\#584](https://github.com/proptest-rs/proptest/pull/584))
 
 ## 1.7.0
 

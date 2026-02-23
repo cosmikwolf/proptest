@@ -1,8 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{
-    parse2, spanned::Spanned, Block, Expr, Ident, ReturnType, Type, TypeTuple,
-};
+use syn::{parse2, Block, Expr, Ident, Pat, ReturnType, Type, TypeTuple};
 
 use crate::property_test::{options::Options, utils::Argument};
 
@@ -24,9 +22,24 @@ pub(super) fn body(
 
     // convert each arg to `field0: x`
     let struct_fields = args.iter().enumerate().map(|(index, arg)| {
-        let pat = &arg.pat_ty.pat;
-        let field_name = nth_field_name(arg.pat_ty.pat.span(), index);
-        quote!(#field_name: #pat,)
+        let pat = arg.pat_ty.pat.as_ref();
+        let field_name = nth_field_name(args, index);
+
+        // If the pattern is an ident, we know that the field name is equal to the pattern name.
+        // This means we need to avoid generating: `x: x`, which would trigger a lint suggesting
+        // shorthand struct initialization.
+
+        match pat {
+            // We need to make sure to handle any mutability modifiers here, i.e. if the user wrote
+            // `mut x: i32`, we have to generate `mut x`, not `x: mut x`
+            //
+            // See https://github.com/proptest-rs/proptest/issues/601
+            Pat::Ident(i) => match i.mutability {
+                Some(mutability) => quote!(#mutability #field_name,),
+                None => quote!(#field_name,),
+            },
+            _ => quote!(#field_name: #pat,),
+        }
     });
 
     // e.g. FooArgs { field0: x, field1: (y, z), }
@@ -36,7 +49,7 @@ pub(super) fn body(
 
     let handle_result = handle_result(ret_ty);
 
-    let config = make_config(options.config.as_ref());
+    let config = make_config(options.config.as_ref(), fn_name);
 
     let tokens = quote! ( {
 
@@ -76,7 +89,7 @@ pub(super) fn body(
 /// Note, this won't catch cases like `type Foo = ();`, since type information isn't available yet,
 /// it's just looking for the syntax `fn foo() {}` or `fn foo() -> () {}`
 fn handle_result(ret_ty: &ReturnType) -> TokenStream {
-    let default_body = || quote! { let _ = result; Ok(()) };
+    let default_body = || quote! { Ok(result) };
     let result_body = || quote! { result };
 
     match ret_ty {
@@ -90,7 +103,7 @@ fn handle_result(ret_ty: &ReturnType) -> TokenStream {
     }
 }
 
-fn make_config(config: Option<&Expr>) -> TokenStream {
+fn make_config(config: Option<&Expr>, fn_name: &Ident) -> TokenStream {
     let trailing = match config {
         None => quote! { ::proptest::test_runner::Config::default() },
         Some(config) => config.to_token_stream(),
@@ -98,7 +111,7 @@ fn make_config(config: Option<&Expr>) -> TokenStream {
 
     quote! {
         let config = ::proptest::test_runner::Config {
-            test_name: Some(concat!(module_path!(), "::", stringify!($test_name))),
+            test_name: Some(concat!(module_path!(), "::", stringify!(#fn_name))),
             source_file: Some(file!()),
             ..#trailing
         };

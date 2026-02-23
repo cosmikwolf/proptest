@@ -1,4 +1,29 @@
-## Unreleased
+## 0.7.0
+
+### Breaking Changes
+
+- The minimum supported Rust version has been increased to 1.84.0. ([\#612](https://github.com/proptest-rs/proptest/pull/612))
+
+### New Features
+
+- Extended `Sequential` test definition to accept closures in its function fields. ([\#609](https://github.com/proptest-rs/proptest/pull/609))
+
+### Other Notes
+
+- Added license files to the crate. ([\#618](https://github.com/proptest-rs/proptest/pull/618))
+
+## 0.6.0
+
+### Breaking Changes
+
+- The minimum supported Rust version has been increased to 1.82.0. ([\#605](https://github.com/proptest-rs/proptest/pull/605))
+
+## 0.5.0
+
+### New Features
+
+- Added reference state machine argument to the teardown function to allow comparison against the SUT.
+  ([\#595](https://github.com/proptest-rs/proptest/pull/595))
 
 ## 0.4.0
 

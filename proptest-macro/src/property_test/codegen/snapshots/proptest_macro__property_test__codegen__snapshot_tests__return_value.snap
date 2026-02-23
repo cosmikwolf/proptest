@@ -3,13 +3,13 @@ source: proptest-macro/src/property_test/codegen/mod.rs
 expression: formatted
 ---
 #[test]
-fn foo() {
+fn return_value() {
     #[derive(Debug)]
-    struct FooArgs {
+    struct ReturnValueArgs {
         x: i32,
         y: i32,
     }
-    impl ::proptest::prelude::Arbitrary for FooArgs {
+    impl ::proptest::prelude::Arbitrary for ReturnValueArgs {
         type Parameters = ();
         type Strategy = ::proptest::strategy::Map<
             ::proptest::arbitrary::StrategyFor<(i32, i32)>,
@@ -21,7 +21,7 @@ fn foo() {
         }
     }
     let config = ::proptest::test_runner::Config {
-        test_name: Some(concat!(module_path!(), "::", stringify!(foo))),
+        test_name: Some(concat!(module_path!(), "::", stringify!(return_value))),
         source_file: Some(file!()),
         ..::proptest::test_runner::Config::default()
     };
@@ -29,16 +29,17 @@ fn foo() {
     let result = runner
         .run(
             &::proptest::strategy::Strategy::prop_map(
-                ::proptest::prelude::any::<FooArgs>(),
+                ::proptest::prelude::any::<ReturnValueArgs>(),
                 |values| {
-                    ::proptest::sugar::NamedArguments(stringify!(FooArgs), values)
+                    ::proptest::sugar::NamedArguments(
+                        stringify!(ReturnValueArgs),
+                        values,
+                    )
                 },
             ),
-            |::proptest::sugar::NamedArguments(_, FooArgs { x, y })| {
-                let result = {
-                    println!("{x} and {y}");
-                };
-                Ok(result)
+            |::proptest::sugar::NamedArguments(_, ReturnValueArgs { x, y })| {
+                let result = { prop_assert!(x == y) };
+                result
             },
         );
     match result {
